@@ -2,8 +2,8 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
-
-dataFile = 'data2.csv'
+import random
+dataFile = 'data1.csv'
 
 
 def get_data():
@@ -18,51 +18,67 @@ def get_data():
     print(col_num)
     points = np.array(points)  # convert 2D list to a 2D numpy array
     points = points.astype(np.float64) # cast all the elements to float from string
+    if col_num > 4 or col_num <= 1:
+        raise Exception("Wrong number of dimensions, CHECK DATA INPUT it shoud be between 2 and 4")
     return points, col_num
 
 
 def plot(x, y, z=0):
-
     if z == 0:
         print("debug, col size = 2")
         plt.plot(x, y, 'rs')
-        plt.show()
     else:
         print("debug, col size = 3")
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         Axes3D.scatter(ax, x, y, z, zdir='z', s=10, c=None, depthshade=True)
-        plt.show()
+    plt.show()
 
 
-# input: points: nested list, col_num: number of column of input data or number of dimensions
-# output: return separated axis data in below form:
-# if col_num is 2: return x and y axises
-# if col_num is 3: return xy in zipped form and z axises
-# if col_num is 4: return xy and zt axises in zipped format
-def get_axis(points, col_num):
-    x = [point[0] for point in points]
-    y = [point[1] for point in points]
-    if col_num == 2:
-        return x, y
-    elif col_num >= 3:
-        xy = zip(x, y)
-        z = [point[2] for point in points]
-        if col_num == 4:
-            t = [point[3] for point in points]
-            zt = zip(z, t)
-            return xy, zt
-        return xy, z
+# input: points: nested list, requested_axis: witch axis you want its data, can be x or y or z or t
+# output: return the data of the requested axis
+def get_axis(requested_axis, points):
+    if requested_axis == 'x':
+        axis = [point[0] for point in points]
+    elif requested_axis == 'y':
+        axis = [point[1] for point in points]
+    elif requested_axis == 'z':
+        axis = [point[2] for point in points]
+    elif requested_axis == 't':
+        axis = [point[3] for point in points]
     else:
-        raise Exception("Wrong number of dimensions, CHECK DATA INPUT it shoud be between 2 and 4")
+        raise Exception("WRONG INPUT, requested input must be one of these: x,y,z,t")
+    return np.array(axis)
+
+
+def random_centre_maker(points, col_num, c):
+    secure_random = random.SystemRandom()
+    random_points = []
+    for i in range(c):
+        generated_point = []
+        # print("x: ", get_axis('x', points).min(), get_axis('x', points).max())
+        # print("y: ", get_axis('y', points).min(), get_axis('y', points).max())
+        x = secure_random.uniform(get_axis('x', points).min(), get_axis('x', points).max())
+        y = secure_random.uniform(get_axis('y', points).min(), get_axis('y', points).max())
+        generated_point.append(x)
+        generated_point.append(y)
+        if col_num >= 3:
+            z = secure_random.uniform(get_axis('z', points).min(), get_axis('z', points).max())
+            generated_point.append(y)
+        if col_num == 4:
+            t = secure_random.uniform(get_axis('t', points).min(), get_axis('t', points).max())
+            generated_point.append(y)
+        # print(i, " point: ", x, y, z, t)
+        random_points.append(generated_point)
+    return random_points
 
 
 def main():
     points, col_num = get_data()
-    x, y, z = get_axis(points, col_num)
-    plot(x, y, z)
-
-
+    centre_points = random_centre_maker(points, col_num, 3)
+    print(type(centre_points), type(centre_points[0]))
+    for i in centre_points:
+        print(i)
 
 
 main()
