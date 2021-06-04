@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import random
-dataFile = 'data1.csv'
+from scipy.spatial import distance
+dataFile = 'data5.csv'
 
 
 def get_data():
@@ -51,10 +52,10 @@ def get_axis(requested_axis, points):
     return np.array(axis)
 
 
-def random_centre_maker(points, col_num, c):
+def random_centre_maker(points, col_num, cluster_num):
     secure_random = random.SystemRandom()
     random_points = []
-    for i in range(c):
+    for c in range(cluster_num):
         generated_point = []
         # print("x: ", get_axis('x', points).min(), get_axis('x', points).max())
         # print("y: ", get_axis('y', points).min(), get_axis('y', points).max())
@@ -73,12 +74,58 @@ def random_centre_maker(points, col_num, c):
     return random_points
 
 
+#TODO: check here if something went wrong
+def sigma(point, cluster_i_centre, centres, cluster_num):
+    print("----- sigma ----")
+    print("k'th data: ", point)
+    print("i'th cluster", cluster_i_centre)
+    output = 0
+    for c in range(cluster_num):
+        dst1 = distance.euclidean(point, cluster_i_centre)
+        dst2 = distance.euclidean(point, centres[c])
+        print("cluster ", c, " : ", centres[c])
+        print("dst1: ", dst1)
+        print("dst2: ", dst2)
+        val = float(dst1 / dst2)
+        print("------------------")
+        output += val
+    return output
+
+
+#TODO: change method name
+def one(points, centres, cluster_num):
+
+    m = 1.2
+    k = 1
+    i = 1
+    power = float(2 / (m - 1))
+    for point in points:
+        print("test: ")
+        for cluster_i_centre in centres:
+            print("k = ", k, " i = ", i, " -->")
+            belonging_value_KI = 1 / pow(sigma(point, cluster_i_centre, centres, cluster_num), power) # belonging value of k'th data to i'th cluster-centre
+            print(f": تعلق داده {k} ام به خوشه {i} ام" , end=" ")
+            print(belonging_value_KI)
+            i += 1
+        i = 1
+        k += 1
+        print("*********")
+
+
+def clustering(points, col_num):
+    c = 1
+    while c <= 3: #TODO: change this statement to satisfy elbow method
+        centre_points = random_centre_maker(points, col_num, c)
+        one(points, centre_points, c)
+        for i in centre_points:
+            print(i)
+        c += 1
+
+
 def main():
     points, col_num = get_data()
-    centre_points = random_centre_maker(points, col_num, 3)
-    print(type(centre_points), type(centre_points[0]))
-    for i in centre_points:
-        print(i)
+    #plot(get_axis('x', points), get_axis('y', points))
+    clustering(points, col_num)
 
 
 main()
