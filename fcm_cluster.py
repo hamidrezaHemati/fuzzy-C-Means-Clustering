@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-dataFile = 'data1.csv'
+dataFile = 'data2.csv'
 
 
 def get_data():
@@ -35,13 +35,31 @@ def plot(x, y, z=0):
         plt.show()
 
 
-def main():
-    points, col_num = get_data()
+# input: points: nested list, col_num: number of column of input data or number of dimensions
+# output: return separated axis data in below form:
+# if col_num is 2: return x and y axises
+# if col_num is 3: return xy in zipped form and z axises
+# if col_num is 4: return xy and zt axises in zipped format
+def get_axis(points, col_num):
     x = [point[0] for point in points]
     y = [point[1] for point in points]
-    z = 0
-    if col_num > 2:
+    if col_num == 2:
+        return x, y
+    elif col_num >= 3:
+        xy = zip(x, y)
         z = [point[2] for point in points]
+        if col_num == 4:
+            t = [point[3] for point in points]
+            zt = zip(z, t)
+            return xy, zt
+        return xy, z
+    else:
+        raise Exception("Wrong number of dimensions, CHECK DATA INPUT it shoud be between 2 and 4")
+
+
+def main():
+    points, col_num = get_data()
+    x, y, z = get_axis(points, col_num)
     plot(x, y, z)
 
 
