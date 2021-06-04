@@ -1,7 +1,9 @@
 import csv
-dataFile = 'data1.csv'
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+
+dataFile = 'data4.csv'
 
 
 def get_data():
@@ -19,8 +21,27 @@ def get_data():
     return points, col_num
 
 
+def plot(points, col_num):
+    x = [point[0] for point in points]
+    y = [point[1] for point in points]
+    if col_num == 2:
+        print("debug, col size = 2")
+        plt.plot(x, y, 'bs')
+        plt.show()
+    elif col_num == 3:
+        print("debug, col size = 3")
+        z = [point[2] for point in points]
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        Axes3D.scatter(ax, x, y, z, zdir='z', s=10, c=None, depthshade=True)
+        plt.show()
+
+
 def main():
     points, col_num = get_data()
+    plot(points, col_num)
+
+
 
 
 main()
