@@ -87,9 +87,8 @@ def sigma(point_k, c_i, centres, power):
 
 
 # update the belonging value of a point from clusters with distance between point and clusters centre points
-def update_belonging_value(points, centres, cluster_num):
+def update_belonging_value(points, centres, cluster_num, m):
     u = np.zeros((len(points), cluster_num))
-    m = 1.2
     power = float(2 / (m - 1))
     for k in range(len(points)):
         for i in range(len(centres)):
@@ -101,17 +100,36 @@ def update_belonging_value(points, centres, cluster_num):
     return u
 
 
-def update_cluster_centroid():
-    print("nothing yet")
+# update the centre of each cluster using points belonging value's for each cluster
+def update_cluster_centroid(points, u, v, m):
+    for i in range(len(v)):
+        numerator = 0
+        denominator = 0
+        for k in range(len(points)):
+            numerator += pow(u[k][i], m) * points[k]
+            denominator += pow(u[k][i], m)
+        v[i] = numerator / denominator
+    return v
 
 
 def clustering(points, col_num):
     c = 1
-    while c <= 3:  # TODO: change this statement to satisfy elbow method
+    steps = 0
+    m = 1.2
+    while c <= 5:  # TODO: change this statement to satisfy elbow method
         print("debug C: ", c)
-        centre_points = random_centre_maker(points, col_num, c)
+        v = random_centre_maker(points, col_num, c)
         # TODO: add a while statement here with iteration steps of 100
-        update_belonging_value(points, centre_points, c)
+        while steps != 100:
+            u = update_belonging_value(points, v, c, m)
+            v = update_cluster_centroid(points, u, v, m)
+            print(v)
+            steps += 1
+        print("-------------")
+        print("-------------")
+        print("-------------")
+        print("-------------")
+        steps = 0
         c += 1
 
 
@@ -119,6 +137,7 @@ def main():
     points, col_num = get_data()
     # plot(get_axis('x', points), get_axis('y', points))
     clustering(points, col_num)
+
 
 
 main()
