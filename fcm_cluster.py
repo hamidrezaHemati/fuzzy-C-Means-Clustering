@@ -4,6 +4,7 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import random
 from scipy.spatial import distance
+
 dataFile = 'data5.csv'
 
 
@@ -18,7 +19,7 @@ def get_data():
             # print(f'{", ".join(row)}')
     print(col_num)
     points = np.array(points)  # convert 2D list to a 2D numpy array
-    points = points.astype(np.float64) # cast all the elements to float from string
+    points = points.astype(np.float64)  # cast all the elements to float from string
     if col_num > 4 or col_num <= 1:
         raise Exception("Wrong number of dimensions, CHECK DATA INPUT it shoud be between 2 and 4")
     return points, col_num
@@ -74,7 +75,7 @@ def random_centre_maker(points, col_num, cluster_num):
     return random_points
 
 
-#TODO: check here if something went wrong
+# TODO: check here if something went wrong
 def sigma(point, cluster_i_centre, centres, cluster_num):
     # print("----- sigma ----")
     # print("k'th data: ", point)
@@ -92,8 +93,8 @@ def sigma(point, cluster_i_centre, centres, cluster_num):
     return output
 
 
-#TODO: change method name
-def one(points, centres, cluster_num):
+# update the belonging value of a point from clusters with distance between point and clusters centre points
+def update_belonging_value(points, centres, cluster_num):
     m = 1.2
     k = 1
     i = 1
@@ -103,8 +104,9 @@ def one(points, centres, cluster_num):
         # print("test: ")
         for cluster_i_centre in centres:
             # print("k = ", k, " i = ", i, " -->")
-            belonging_value_KI = 1 / pow(sigma(point, cluster_i_centre, centres, cluster_num), power) # belonging value of k'th data to i'th cluster-centre
-            print(f": تعلق داده {k} ام به خوشه {i} ام" , end=" ")
+            belonging_value_KI = 1 / pow(sigma(point, cluster_i_centre, centres, cluster_num),
+                                         power)  # belonging value of k'th data to i'th cluster-centre
+            print(f": تعلق داده {k} ام به خوشه {i} ام", end=" ")
             print(belonging_value_KI)
             sum_of_belongings += belonging_value_KI
             i += 1
@@ -114,22 +116,24 @@ def one(points, centres, cluster_num):
     print(sum_of_belongings)
 
 
+def update_cluster_centroid():
+    print("nothing yet")
+
+
 def clustering(points, col_num):
     c = 1
-    while c <= 3: #TODO: change this statement to satisfy elbow method
+    while c <= 3:  # TODO: change this statement to satisfy elbow method
+        print("debug C: ", c)
         centre_points = random_centre_maker(points, col_num, c)
-        one(points, centre_points, c)
-        for i in centre_points:
-            print(i)
+        # TODO: add a while statement here with iteration steps of 100
+        update_belonging_value(points, centre_points, c)
         c += 1
 
 
 def main():
     points, col_num = get_data()
-    #plot(get_axis('x', points), get_axis('y', points))
+    # plot(get_axis('x', points), get_axis('y', points))
     clustering(points, col_num)
 
 
 main()
-
-
