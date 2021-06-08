@@ -72,7 +72,7 @@ def random_centre_maker(points, col_num, cluster_num):
             generated_point.append(y)
         # print(i, " point: ", x, y, z, t)
         random_points.append(generated_point)
-    return random_points
+    return np.array(random_points)
 
 
 def sigma(point_k, c_i, centres, power):
@@ -135,7 +135,7 @@ def clustering(points, col_num):
 
 def main():
     points, col_num = get_data()
-    # plot(get_axis('x', points), get_axis('y', points))
+    plot(get_axis('x', points), get_axis('y', points))
     clustering(points, col_num)
 
 
