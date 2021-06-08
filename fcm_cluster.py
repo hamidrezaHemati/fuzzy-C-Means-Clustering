@@ -30,12 +30,13 @@ def get_data():
 def plot(x, y, z=0):
     if z == 0:
         print("debug, col size = 2")
-        plt.plot(x, y, 'o:r')
+        plt.scatter(x, y, c='black')
     else:
         print("debug, col size = 3")
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         Axes3D.scatter(ax, x, y, z, zdir='z', s=10, c=None, depthshade=True)
+    plt.title(f'{dataFile}')
     plt.show()
 
 
@@ -122,10 +123,28 @@ def cost_calculator(u, v, points, m):
     return cost
 
 
+def plot_cost(costs, c):
+    plt.plot(np.arange(1., c, 1.), costs, 'o:r')
+    plt.title(f'{dataFile} cost chart')
+    plt.title(f'{dataFile}')
+    plt.show()
+
+
+def plot_chart(df, u, m, dim):
+    if dim == 2:
+        plt.scatter(df[0], df[1], c=u)
+    elif dim == 3:
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        Axes3D.scatter(ax, df[0], df[1], df[2], zdir='z', s=10, c=u, depthshade=True)
+    plt.title(f'{dataFile} m = {m}')
+    plt.show()
+
+
 def clustering(points, col_num, df):
     c = 3
     steps = 0
-    m = 3
+    m = 10
     costs = []
     u = np.zeros((len(points), 3))
     while c == 3:  # TODO: change this statement to satisfy elbow method
@@ -134,25 +153,17 @@ def clustering(points, col_num, df):
         while steps != 100:
             u = update_belonging_value(points, v, c, m)
             v = update_cluster_centroid(points, u, v, m)
-            # for j in range(c):
-            #     print(v[j], end=" ")
-            # print()
             steps += 1
         costs.append(cost_calculator(u, v, points, m))
         steps = 0
         c += 1
-    print(u)
-    print("debug, plot")
-    print("u size: ", len(u))
-    print(df)
-    plt.scatter(df[0], df[1], c=u)
-    plt.show()
-    # plot(np.arange(1., c, 1.), costs)
+    plot_cost(costs, c)
+    plot_chart(df, u, m, 3)
 
 
 def main():
     points, col_num, df = get_data()
-    # plot(get_axis('x', points), get_axis('y', points))
+    # plot(get_axis('x', points), get_axis('y', points), 1)
     clustering(points, col_num, df)
 
 
