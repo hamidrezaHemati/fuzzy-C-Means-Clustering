@@ -75,23 +75,14 @@ def random_centre_maker(points, col_num, cluster_num):
     return random_points
 
 
-# TODO: check here if something went wrong
-def sigma(point_k, c_i, centres):
-    # print("----- sigma ----")
-    # print("X_k: ", point)
-    # print("c_i: ", cluster_i_centre)
+def sigma(point_k, c_i, centres, power):
     output = 0
     dst1 = distance.euclidean(point_k, c_i)
     for c in centres:
-        print("C: ", c)
         dst2 = distance.euclidean(point_k, c)
-        # print("cluster ", c, " : ", centres[c])
-        # print("dst1: ", dst1)
-        # print("dst2: ", dst2)
-        # print("------------------")
         val = float(dst1 / dst2)
+        val = pow(val, power)
         output += val
-    # print(output)
     return output
 
 
@@ -100,21 +91,18 @@ def update_belonging_value(points, centres, cluster_num):
     m = 1.2
     k = 1
     i = 1
-    sum_of_belongings = 0
     power = float(2 / (m - 1))
     for point_k in points:
-        # print("test: ")
+        sum_of_belongings = 0
         for c_i in centres:
-            # print("k = ", k, " i = ", i, " -->")
-            belonging_value_KI = 1 / sigma(point_k, c_i, centres)  # belonging value of k'th data to i'th cluster-centre
+            print("k = ", k, " i = ", i, " -->")
+            belonging_value_KI = 1 / sigma(point_k, c_i, centres, power)  # belonging value of k'th data to i'th cluster-centre
             print(f": تعلق داده {k} ام به خوشه {i} ام", end=" ")
             print(belonging_value_KI)
             sum_of_belongings += belonging_value_KI
             i += 1
         i = 1
         k += 1
-        # print("*********")
-    print(sum_of_belongings)
 
 
 def update_cluster_centroid():
