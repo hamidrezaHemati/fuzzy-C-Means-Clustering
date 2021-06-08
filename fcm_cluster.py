@@ -88,21 +88,17 @@ def sigma(point_k, c_i, centres, power):
 
 # update the belonging value of a point from clusters with distance between point and clusters centre points
 def update_belonging_value(points, centres, cluster_num):
+    u = np.zeros((len(points), cluster_num))
     m = 1.2
-    k = 1
-    i = 1
     power = float(2 / (m - 1))
-    for point_k in points:
-        sum_of_belongings = 0
-        for c_i in centres:
-            print("k = ", k, " i = ", i, " -->")
-            belonging_value_KI = 1 / sigma(point_k, c_i, centres, power)  # belonging value of k'th data to i'th cluster-centre
-            print(f": تعلق داده {k} ام به خوشه {i} ام", end=" ")
-            print(belonging_value_KI)
-            sum_of_belongings += belonging_value_KI
-            i += 1
-        i = 1
-        k += 1
+    for k in range(len(points)):
+        for i in range(len(centres)):
+            # print("k = ", k, " i = ", i, " -->")
+            belonging_value_KI = 1 / sigma(points[k], centres[i], centres, power)  # belonging value of k'th data to i'th cluster-centre
+            u[k][i] = belonging_value_KI
+            # print(f": تعلق داده {k} ام به خوشه {i} ام", end=" ")
+            # print(belonging_value_KI)
+    return u
 
 
 def update_cluster_centroid():
