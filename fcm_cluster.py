@@ -4,14 +4,16 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import random
 from scipy.spatial import distance
+import pandas as pd
 
-dataFile = 'data5.csv'
+dataFile = 'data4.csv'
 
 
 def get_data():
     points = []
     with open(dataFile) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
+        df = pd.read_csv(dataFile, header = None)
         col_num = len(next(csv_reader))  # Read first line and count columns
         csv_file.seek(0)  # go back to beginning of file
         for row in csv_reader:
@@ -22,13 +24,13 @@ def get_data():
     points = points.astype(np.float64)  # cast all the elements to float from string
     if col_num > 4 or col_num <= 1:
         raise Exception("Wrong number of dimensions, CHECK DATA INPUT it shoud be between 2 and 4")
-    return points, col_num
+    return points, col_num, df
 
 
 def plot(x, y, z=0):
     if z == 0:
         print("debug, col size = 2")
-        plt.plot(x, y, 'rs')
+        plt.plot(x, y, 'o:r')
     else:
         print("debug, col size = 3")
         fig = plt.figure()
@@ -112,11 +114,21 @@ def update_cluster_centroid(points, u, v, m):
     return v
 
 
-def clustering(points, col_num):
-    c = 2
+def cost_calculator(u, v, points, m):
+    cost = 0
+    for j in range(len(points)):
+        for i in range(len(v)):
+            cost += pow(u[j][i], m) * pow(distance.euclidean(points[j], v[i]), 2)
+    return cost
+
+
+def clustering(points, col_num, df):
+    c = 3
     steps = 0
-    m = 1.2
-    while c <= 5:  # TODO: change this statement to satisfy elbow method
+    m = 3
+    costs = []
+    u = np.zeros((len(points), 3))
+    while c == 3:  # TODO: change this statement to satisfy elbow method
         print("debug C: ", c)
         v = random_centre_maker(points, col_num, c)
         while steps != 100:
@@ -126,14 +138,22 @@ def clustering(points, col_num):
             #     print(v[j], end=" ")
             # print()
             steps += 1
+        costs.append(cost_calculator(u, v, points, m))
         steps = 0
         c += 1
+    print(u)
+    print("debug, plot")
+    print("u size: ", len(u))
+    print(df)
+    plt.scatter(df[0], df[1], c=u)
+    plt.show()
+    # plot(np.arange(1., c, 1.), costs)
 
 
 def main():
-    points, col_num = get_data()
+    points, col_num, df = get_data()
     # plot(get_axis('x', points), get_axis('y', points))
-    clustering(points, col_num)
+    clustering(points, col_num, df)
 
 
 main()
