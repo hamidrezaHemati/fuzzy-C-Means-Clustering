@@ -76,20 +76,22 @@ def random_centre_maker(points, col_num, cluster_num):
 
 
 # TODO: check here if something went wrong
-def sigma(point, cluster_i_centre, centres, cluster_num):
+def sigma(point_k, c_i, centres):
     # print("----- sigma ----")
-    # print("k'th data: ", point)
-    # print("i'th cluster", cluster_i_centre)
+    # print("X_k: ", point)
+    # print("c_i: ", cluster_i_centre)
     output = 0
-    for c in range(cluster_num):
-        dst1 = distance.euclidean(point, cluster_i_centre)
-        dst2 = distance.euclidean(point, centres[c])
+    dst1 = distance.euclidean(point_k, c_i)
+    for c in centres:
+        print("C: ", c)
+        dst2 = distance.euclidean(point_k, c)
         # print("cluster ", c, " : ", centres[c])
         # print("dst1: ", dst1)
         # print("dst2: ", dst2)
         # print("------------------")
         val = float(dst1 / dst2)
         output += val
+    # print(output)
     return output
 
 
@@ -100,12 +102,11 @@ def update_belonging_value(points, centres, cluster_num):
     i = 1
     sum_of_belongings = 0
     power = float(2 / (m - 1))
-    for point in points:
+    for point_k in points:
         # print("test: ")
-        for cluster_i_centre in centres:
+        for c_i in centres:
             # print("k = ", k, " i = ", i, " -->")
-            belonging_value_KI = 1 / pow(sigma(point, cluster_i_centre, centres, cluster_num),
-                                         power)  # belonging value of k'th data to i'th cluster-centre
+            belonging_value_KI = 1 / sigma(point_k, c_i, centres)  # belonging value of k'th data to i'th cluster-centre
             print(f": تعلق داده {k} ام به خوشه {i} ام", end=" ")
             print(belonging_value_KI)
             sum_of_belongings += belonging_value_KI
