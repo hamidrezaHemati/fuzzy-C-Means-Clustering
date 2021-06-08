@@ -113,31 +113,27 @@ def update_cluster_centroid(points, u, v, m):
 
 
 def clustering(points, col_num):
-    c = 1
+    c = 2
     steps = 0
     m = 1.2
     while c <= 5:  # TODO: change this statement to satisfy elbow method
         print("debug C: ", c)
         v = random_centre_maker(points, col_num, c)
-        # TODO: add a while statement here with iteration steps of 100
         while steps != 100:
             u = update_belonging_value(points, v, c, m)
             v = update_cluster_centroid(points, u, v, m)
-            print(v)
+            # for j in range(c):
+            #     print(v[j], end=" ")
+            # print()
             steps += 1
-        print("-------------")
-        print("-------------")
-        print("-------------")
-        print("-------------")
         steps = 0
         c += 1
 
 
 def main():
     points, col_num = get_data()
-    plot(get_axis('x', points), get_axis('y', points))
+    # plot(get_axis('x', points), get_axis('y', points))
     clustering(points, col_num)
-
 
 
 main()
