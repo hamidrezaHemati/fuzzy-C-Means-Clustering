@@ -6,7 +6,7 @@ import random
 from scipy.spatial import distance
 import pandas as pd
 
-dataFile = 'data4.csv'
+dataFile = 'data1.csv'
 
 
 def get_data():
@@ -157,13 +157,16 @@ def clustering(points, col_num, df):
         costs.append(cost_calculator(u, v, points, m))
         steps = 0
         c += 1
-    plot_cost(costs, c)
-    plot_chart(df, u, m, 3)
+    # plot_cost(costs, c)
+    plt.scatter(df[0], df[1], c=u)
 
 
 def main():
+    # plt.plot([1, 2, 3, 4])
+    # plt.ylabel('some numbers')
+    # plt.show()
     points, col_num, df = get_data()
-    # plot(get_axis('x', points), get_axis('y', points), 1)
+    plot(get_axis('x', points), get_axis('y', points), 0)
     clustering(points, col_num, df)
 
 
