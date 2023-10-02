@@ -50,6 +50,20 @@ The next point is, what is the impact of the number of clusters on the cost func
 As we can see, with an increase in the number of clusters, the cost follows a decreasing trend. This is logical because when the number of cluster centroids increases, the distances of data points to these centroids decrease.
 
 
+## results
+
+### 1. Fuzzy plot of clusters of dataset No.1
+![dataset1](pics/data1.png)
+![dataset1 elbow](pics/data1%20cost.png)
+![dataset1 elbow](pics/data1%20m%3D1.2.png)
+![dataset1 elbow](pics/data1%20m%3D3.png)
+
+### 2. Fuzzy plot of clusters of dataset No.3
+![dataset1](pics/data3.png)
+![dataset1 elbow](pics/data3%20cost.png)
+![dataset1 elbow](pics/data3%20m%3D1.2.png)
+![dataset1 elbow](pics/data3%20m%3D3.png)
+
 ## Use Cases
 Fuzzy C-Means clustering has various applications across different domains:
 
